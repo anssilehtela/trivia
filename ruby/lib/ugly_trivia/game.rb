@@ -18,12 +18,8 @@ module UglyTrivia
         @pop_questions.push "Pop Question #{i}"
         @science_questions.push "Science Question #{i}"
         @sports_questions.push "Sports Question #{i}"
-        @rock_questions.push create_rock_question(i)
+        @rock_questions.push "Rock Question #{i}"
       end
-    end
-
-    def create_rock_question(index)
-      "Rock Question #{index}"
     end
 
     def is_playable?
@@ -79,7 +75,7 @@ module UglyTrivia
       end
     end
 
-    def was_correctly_answered
+    def correct_answer
       if @in_penalty_box[@current_player]
         if @is_getting_out_of_penalty_box
           puts 'Answer was correct!!!!'
