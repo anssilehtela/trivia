@@ -68,7 +68,7 @@ module UglyTrivia
         else
           puts "#{@players[@current_player]} is not getting out of the penalty box"
           @is_getting_out_of_penalty_box = false
-          end
+        end
       else
         @places[@current_player] = @places[@current_player] + roll
         @places[@current_player] = @places[@current_player] - 12 if @places[@current_player] > 11
@@ -78,30 +78,6 @@ module UglyTrivia
         ask_question
       end
     end
-
-  private
-
-    def ask_question
-      puts @pop_questions.shift if current_category == 'Pop'
-      puts @science_questions.shift if current_category == 'Science'
-      puts @sports_questions.shift if current_category == 'Sports'
-      puts @rock_questions.shift if current_category == 'Rock'
-    end
-
-    def current_category
-      return 'Pop' if @places[@current_player] == 0
-      return 'Pop' if @places[@current_player] == 4
-      return 'Pop' if @places[@current_player] == 8
-      return 'Science' if @places[@current_player] == 1
-      return 'Science' if @places[@current_player] == 5
-      return 'Science' if @places[@current_player] == 9
-      return 'Sports' if @places[@current_player] == 2
-      return 'Sports' if @places[@current_player] == 6
-      return 'Sports' if @places[@current_player] == 10
-      return 'Rock'
-    end
-
-  public
 
     def was_correctly_answered
       if @in_penalty_box[@current_player]
@@ -144,6 +120,26 @@ module UglyTrivia
     end
 
   private
+
+    def ask_question
+      puts @pop_questions.shift if current_category == 'Pop'
+      puts @science_questions.shift if current_category == 'Science'
+      puts @sports_questions.shift if current_category == 'Sports'
+      puts @rock_questions.shift if current_category == 'Rock'
+    end
+
+    def current_category
+      return 'Pop' if @places[@current_player] == 0
+      return 'Pop' if @places[@current_player] == 4
+      return 'Pop' if @places[@current_player] == 8
+      return 'Science' if @places[@current_player] == 1
+      return 'Science' if @places[@current_player] == 5
+      return 'Science' if @places[@current_player] == 9
+      return 'Sports' if @places[@current_player] == 2
+      return 'Sports' if @places[@current_player] == 6
+      return 'Sports' if @places[@current_player] == 10
+      return 'Rock'
+    end
 
     def did_player_win
       !(@purses[@current_player] == 6)
