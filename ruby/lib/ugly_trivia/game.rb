@@ -1,6 +1,6 @@
 module UglyTrivia
   class Game
-    def  initialize
+    def initialize
       @players = []
       @places = Array.new(6, 0)
       @purses = Array.new(6, 0)
@@ -69,9 +69,7 @@ module UglyTrivia
           puts "#{@players[@current_player]} is not getting out of the penalty box"
           @is_getting_out_of_penalty_box = false
           end
-
       else
-
         @places[@current_player] = @places[@current_player] + roll
         @places[@current_player] = @places[@current_player] - 12 if @places[@current_player] > 11
 
@@ -122,11 +120,7 @@ module UglyTrivia
           @current_player = 0 if @current_player == @players.length
           true
         end
-
-
-
       else
-
         puts "Answer was corrent!!!!"
         @purses[@current_player] += 1
         puts "#{@players[@current_player]} now has #{@purses[@current_player]} Gold Coins."
@@ -135,18 +129,18 @@ module UglyTrivia
         @current_player += 1
         @current_player = 0 if @current_player == @players.length
 
-        return winner
+        winner
       end
     end
 
     def wrong_answer
-  		puts 'Question was incorrectly answered'
-  		puts "#{@players[@current_player]} was sent to the penalty box"
-  		@in_penalty_box[@current_player] = true
+      puts 'Question was incorrectly answered'
+      puts "#{@players[@current_player]} was sent to the penalty box"
+      @in_penalty_box[@current_player] = true
 
       @current_player += 1
       @current_player = 0 if @current_player == @players.length
-  		return true
+      true
     end
 
   private
