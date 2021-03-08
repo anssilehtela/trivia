@@ -55,22 +55,17 @@ module UglyTrivia
       puts "They have rolled a #{result}"
 
       if @in_penalty_box[@current_player]
-        if result % 2 != 0
-          @is_getting_out_of_penalty_box = true
-
-          puts "#{players[@current_player]} is getting out of the penalty box"
-          new_place(result)
-          puts "The category is #{current_category}"
-          ask_question
-        else
+        if result % 2 == 0
           puts "#{players[@current_player]} is not getting out of the penalty box"
           @is_getting_out_of_penalty_box = false
           return
+        else
+          @is_getting_out_of_penalty_box = true
+          puts "#{players[@current_player]} is getting out of the penalty box"
         end
-      else
-        new_place(result)
-        puts "The category is #{current_category}"
       end
+      new_place(result)
+      puts "The category is #{current_category}"
       ask_question
     end
 
