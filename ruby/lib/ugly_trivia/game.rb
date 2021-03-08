@@ -7,10 +7,9 @@ module UglyTrivia
       @places = Array.new(6, 0)
       @purses = Array.new(6, 0)
       @in_penalty_box = Array.new(6, nil)
-      initialize_questions
-
       @current_player = 0
       @is_getting_out_of_penalty_box = false
+      initialize_questions
     end
 
     def initialize_questions
@@ -27,7 +26,7 @@ module UglyTrivia
       end
     end
 
-    attr_accessor :players, :places, :purses
+    attr_accessor :players, :places, :purses, :in_penalty_box, :current_player, :is_getting_out_of_penalty_box
 
     def is_playable?
       players.length >= 2
@@ -51,30 +50,36 @@ module UglyTrivia
     end
 
     def roll(result)
-      puts "#{players[@current_player]} is the current player"
+      puts "#{players[current_player]} is the current player"
       puts "They have rolled a #{result}"
 
-      if @in_penalty_box[@current_player]
-        if result % 2 == 0
-          puts "#{players[@current_player]} is not getting out of the penalty box"
-          @is_getting_out_of_penalty_box = false
-          return
-        else
-          @is_getting_out_of_penalty_box = true
-          puts "#{players[@current_player]} is getting out of the penalty box"
-        end
-      end
+      return if remains_in_penalty_box(result)
+
       new_place(result)
       puts "The category is #{current_category}"
       ask_question
     end
 
+    def remains_in_penalty_box(result)
+      return false unless @in_penalty_box[current_player]
+
+      if result % 2 == 0
+        puts "#{players[current_player]} is not getting out of the penalty box"
+        @is_getting_out_of_penalty_box = false
+        true
+      else
+        @is_getting_out_of_penalty_box = true
+        puts "#{players[current_player]} is getting out of the penalty box"
+        false
+      end
+    end
+
     def correct_answer
-      if @in_penalty_box[@current_player]
+      if @in_penalty_box[current_player]
         if @is_getting_out_of_penalty_box
           puts 'Answer was correct!!!!'
-          @purses[@current_player] += 1
-          puts "#{@players[@current_player]} now has #{@purses[@current_player]} Gold Coins."
+          @purses[current_player] += 1
+          puts "#{@players[current_player]} now has #{@purses[current_player]} Gold Coins."
 
           winner = did_player_win()
           next_player
@@ -86,9 +91,8 @@ module UglyTrivia
         end
       else
         puts "Answer was corrent!!!!"
-        @purses[@current_player] += 1
-        puts "#{@players[@current_player]} now has #{@purses[@current_player]} Gold Coins."
-
+        @purses[current_player] += 1
+        puts "#{@players[current_player]} now has #{@purses[current_player]} Gold Coins."
         winner = did_player_win
         next_player
 
@@ -98,8 +102,8 @@ module UglyTrivia
 
     def wrong_answer
       puts 'Question was incorrectly answered'
-      puts "#{@players[@current_player]} was sent to the penalty box"
-      @in_penalty_box[@current_player] = true
+      puts "#{@players[current_player]} was sent to the penalty box"
+      @in_penalty_box[current_player] = true
 
       next_player
       true
@@ -113,7 +117,7 @@ module UglyTrivia
     end
 
     def current_category
-      case @places[@current_player]
+      case @places[current_player]
       when 0,4,8
         'Pop'
       when 1,5,9
@@ -126,18 +130,18 @@ module UglyTrivia
     end
 
     def did_player_win
-      !(@purses[@current_player] == 6)
+      !(@purses[current_player] == 6)
     end
 
     def next_player
       @current_player += 1
-      @current_player = 0 if @current_player == @players.length
+      @current_player = 0 if current_player == @players.length
     end
 
     def new_place(result)
-      @places[@current_player] = @places[@current_player] + result
-      @places[@current_player] = @places[@current_player] - 12 if @places[@current_player] > 11
-      puts "#{@players[@current_player]}'s new location is #{@places[@current_player]}"
+      @places[current_player] = @places[current_player] + result
+      @places[current_player] = @places[current_player] - 12 if @places[current_player] > 11
+      puts "#{@players[current_player]}'s new location is #{@places[current_player]}"
     end
   end
 end
