@@ -1,3 +1,5 @@
+require 'pry'
+
 module UglyTrivia
   class Game
     def initialize
@@ -5,14 +7,17 @@ module UglyTrivia
       @places = Array.new(6, 0)
       @purses = Array.new(6, 0)
       @in_penalty_box = Array.new(6, nil)
+      initialize_questions
 
+      @current_player = 0
+      @is_getting_out_of_penalty_box = false
+    end
+
+    def initialize_questions
       @pop_questions = []
       @science_questions = []
       @sports_questions = []
       @rock_questions = []
-
-      @current_player = 0
-      @is_getting_out_of_penalty_box = false
 
       50.times do |i|
         @pop_questions.push "Pop Question #{i}"
@@ -22,28 +27,36 @@ module UglyTrivia
       end
     end
 
+    def players
+      @players
+    end
+
+    def places
+      @places
+    end
+
+    def purses
+      @purses
+    end
+
     def is_playable?
-      how_many_players >= 2
+      players.length >= 2
     end
 
     def add_player(player_name)
-      if @players.length == 6
+      if @players.size == 6
         puts "Max 6 players allowed, not adding new player."
         return false
       end
       @players.push player_name
-      @places[how_many_players] = 0
-      @purses[how_many_players] = 0
-      @in_penalty_box[how_many_players] = false
+      @places[players.length] = 0
+      @purses[players.length] = 0
+      @in_penalty_box[players.length] = false
 
       puts "#{player_name} was added"
       puts "They are player number #{@players.length}"
 
       true
-    end
-
-    def how_many_players
-      @players.length
     end
 
     def roll(roll)
@@ -114,8 +127,6 @@ module UglyTrivia
       @current_player = 0 if @current_player == @players.length
       true
     end
-
-  private
 
     def ask_question
       puts @pop_questions.shift if current_category == 'Pop'
