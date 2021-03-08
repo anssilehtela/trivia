@@ -41,7 +41,7 @@ module UglyTrivia
       players.push player_name
       places[players.length] = 0
       purses[players.length] = 0
-      @in_penalty_box[players.length] = false
+      in_penalty_box[players.length] = false
 
       puts "#{player_name} was added"
       puts "They are player number #{players.length}"
@@ -61,49 +61,36 @@ module UglyTrivia
     end
 
     def remains_in_penalty_box(result)
-      return false unless @in_penalty_box[current_player]
+      return false unless in_penalty_box[current_player]
 
       if result % 2 == 0
         puts "#{players[current_player]} is not getting out of the penalty box"
-        @is_getting_out_of_penalty_box = false
         true
       else
-        @is_getting_out_of_penalty_box = true
+        self.in_penalty_box[current_player] = false
         puts "#{players[current_player]} is getting out of the penalty box"
         false
       end
     end
 
     def correct_answer
-      if @in_penalty_box[current_player]
-        if @is_getting_out_of_penalty_box
-          puts 'Answer was correct!!!!'
-          @purses[current_player] += 1
-          puts "#{@players[current_player]} now has #{@purses[current_player]} Gold Coins."
-
-          winner = did_player_win()
-          next_player
-
-          winner
-        else
-          next_player
-          true
-        end
-      else
-        puts "Answer was corrent!!!!"
-        @purses[current_player] += 1
-        puts "#{@players[current_player]} now has #{@purses[current_player]} Gold Coins."
-        winner = did_player_win
+      if in_penalty_box[current_player]
         next_player
-
-        winner
+        return true
       end
+
+      puts 'Answer was correct!!!!'
+      purses[current_player] += 1
+      puts "#{@players[current_player]} now has #{purses[current_player]} Gold Coins."
+      winner = did_player_win
+      next_player
+      winner
     end
 
     def wrong_answer
       puts 'Question was incorrectly answered'
       puts "#{@players[current_player]} was sent to the penalty box"
-      @in_penalty_box[current_player] = true
+      in_penalty_box[current_player] = true
 
       next_player
       true
@@ -117,7 +104,7 @@ module UglyTrivia
     end
 
     def current_category
-      case @places[current_player]
+      case places[current_player]
       when 0,4,8
         'Pop'
       when 1,5,9
@@ -130,18 +117,18 @@ module UglyTrivia
     end
 
     def did_player_win
-      !(@purses[current_player] == 6)
+      !(purses[current_player] == 6)
     end
 
     def next_player
-      @current_player += 1
-      @current_player = 0 if current_player == @players.length
+      self.current_player += 1
+      self.current_player = 0 if current_player == @players.length
     end
 
     def new_place(result)
-      @places[current_player] = @places[current_player] + result
-      @places[current_player] = @places[current_player] - 12 if @places[current_player] > 11
-      puts "#{@players[current_player]}'s new location is #{@places[current_player]}"
+      places[current_player] = places[current_player] + result
+      places[current_player] = places[current_player] - 12 if places[current_player] > 11
+      puts "#{@players[current_player]}'s new location is #{places[current_player]}"
     end
   end
 end
