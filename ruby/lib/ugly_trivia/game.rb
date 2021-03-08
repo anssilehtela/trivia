@@ -50,33 +50,28 @@ module UglyTrivia
       true
     end
 
-    def roll(roll)
-      puts "#{@players[@current_player]} is the current player"
-      puts "They have rolled a #{roll}"
+    def roll(result)
+      puts "#{players[@current_player]} is the current player"
+      puts "They have rolled a #{result}"
 
       if @in_penalty_box[@current_player]
-        if roll % 2 != 0
+        if result % 2 != 0
           @is_getting_out_of_penalty_box = true
 
-          puts "#{@players[@current_player]} is getting out of the penalty box"
-          @places[@current_player] = @places[@current_player] + roll
-          @places[@current_player] = @places[@current_player] - 12 if @places[@current_player] > 11
-
-          puts "#{@players[@current_player]}'s new location is #{@places[@current_player]}"
+          puts "#{players[@current_player]} is getting out of the penalty box"
+          new_place(result)
           puts "The category is #{current_category}"
           ask_question
         else
-          puts "#{@players[@current_player]} is not getting out of the penalty box"
+          puts "#{players[@current_player]} is not getting out of the penalty box"
           @is_getting_out_of_penalty_box = false
+          return
         end
       else
-        @places[@current_player] = @places[@current_player] + roll
-        @places[@current_player] = @places[@current_player] - 12 if @places[@current_player] > 11
-
-        puts "#{@players[@current_player]}'s new location is #{@places[@current_player]}"
+        new_place(result)
         puts "The category is #{current_category}"
-        ask_question
       end
+      ask_question
     end
 
     def correct_answer
@@ -142,6 +137,12 @@ module UglyTrivia
     def next_player
       @current_player += 1
       @current_player = 0 if @current_player == @players.length
+    end
+
+    def new_place(result)
+      @places[@current_player] = @places[@current_player] + result
+      @places[@current_player] = @places[@current_player] - 12 if @places[@current_player] > 11
+      puts "#{@players[@current_player]}'s new location is #{@places[@current_player]}"
     end
   end
 end
