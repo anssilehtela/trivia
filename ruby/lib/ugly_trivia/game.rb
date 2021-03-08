@@ -34,17 +34,18 @@ module UglyTrivia
     end
 
     def add_player(player_name)
-      if @players.size == 6
+      if players.size == 6
         puts "Max 6 players allowed, not adding new player."
         return false
       end
-      @players.push player_name
-      @places[players.length] = 0
-      @purses[players.length] = 0
+
+      players.push player_name
+      places[players.length] = 0
+      purses[players.length] = 0
       @in_penalty_box[players.length] = false
 
       puts "#{player_name} was added"
-      puts "They are player number #{@players.length}"
+      puts "They are player number #{players.length}"
 
       true
     end
@@ -86,13 +87,11 @@ module UglyTrivia
           puts "#{@players[@current_player]} now has #{@purses[@current_player]} Gold Coins."
 
           winner = did_player_win()
-          @current_player += 1
-          @current_player = 0 if @current_player == @players.length
+          next_player
 
           winner
         else
-          @current_player += 1
-          @current_player = 0 if @current_player == @players.length
+          next_player
           true
         end
       else
@@ -101,8 +100,7 @@ module UglyTrivia
         puts "#{@players[@current_player]} now has #{@purses[@current_player]} Gold Coins."
 
         winner = did_player_win
-        @current_player += 1
-        @current_player = 0 if @current_player == @players.length
+        next_player
 
         winner
       end
@@ -113,8 +111,7 @@ module UglyTrivia
       puts "#{@players[@current_player]} was sent to the penalty box"
       @in_penalty_box[@current_player] = true
 
-      @current_player += 1
-      @current_player = 0 if @current_player == @players.length
+      next_player
       true
     end
 
@@ -140,6 +137,11 @@ module UglyTrivia
 
     def did_player_win
       !(@purses[@current_player] == 6)
+    end
+
+    def next_player
+      @current_player += 1
+      @current_player = 0 if @current_player == @players.length
     end
   end
 end
