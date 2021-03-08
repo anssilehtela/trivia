@@ -27,17 +27,7 @@ module UglyTrivia
       end
     end
 
-    def players
-      @players
-    end
-
-    def places
-      @places
-    end
-
-    def purses
-      @purses
-    end
+    attr_accessor :players, :places, :purses
 
     def is_playable?
       players.length >= 2
