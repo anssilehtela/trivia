@@ -21,7 +21,23 @@ describe "game" do
 
   context "when asking for category" do
     it 'returns correct one based on players place on board' do
+      game.places[game.current_player] = 4
       expect(game.current_category).to eq "Pop"
+      game.places[game.current_player] = 6
+      expect(game.current_category).to eq "Sports"
+      game.places[game.current_player] = 65
+      expect(game.current_category).to eq "Rock"
+    end
+  end
+
+  context "generate questions" do
+    it 'creates a correct hash object' do
+      questions = game.generate_questions(["Pop"], 1)
+      expect(questions[:Pop]).to eq ["Pop Question 0"]
+
+      questions = game.generate_questions(["Pop", "Rock"], 2)
+      expect(questions[:Pop][0]).to eq "Pop Question 0"
+      expect(questions[:Rock][1]).to eq "Rock Question 1"
     end
   end
 

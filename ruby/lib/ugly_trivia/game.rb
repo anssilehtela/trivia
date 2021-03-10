@@ -2,6 +2,10 @@ require 'pry'
 
 module UglyTrivia
   class Game
+    attr_accessor :players, :places, :purses, :in_penalty_box,
+                  :current_player, :is_getting_out_of_penalty_box
+    QUESTION_CATEGORIES = ["Pop", "Science", "Sports", "Rock"].freeze
+
     def initialize
       @players = []
       @places = Array.new(6, 0)
@@ -9,24 +13,22 @@ module UglyTrivia
       @in_penalty_box = Array.new(6, nil)
       @current_player = 0
       @is_getting_out_of_penalty_box = false
-      initialize_questions
+      @questions = generate_questions(QUESTION_CATEGORIES, 50)
     end
 
-    def initialize_questions
-      @pop_questions = []
-      @science_questions = []
-      @sports_questions = []
-      @rock_questions = []
-
-      50.times do |i|
-        @pop_questions.push "Pop Question #{i}"
-        @science_questions.push "Science Question #{i}"
-        @sports_questions.push "Sports Question #{i}"
-        @rock_questions.push "Rock Question #{i}"
+    def generate_questions(categories, amount)
+      questions = {}
+      categories.each do |cat|
+        questions[cat.to_sym] = []
       end
-    end
 
-    attr_accessor :players, :places, :purses, :in_penalty_box, :current_player, :is_getting_out_of_penalty_box
+      amount.times do |i|
+        categories.each do |cat|
+          questions[cat.to_sym] << "#{cat} Question #{i}"
+        end
+      end
+      questions
+    end
 
     def is_playable?
       players.length >= 2
@@ -97,23 +99,11 @@ module UglyTrivia
     end
 
     def ask_question
-      puts @pop_questions.shift if current_category == 'Pop'
-      puts @science_questions.shift if current_category == 'Science'
-      puts @sports_questions.shift if current_category == 'Sports'
-      puts @rock_questions.shift if current_category == 'Rock'
+      puts @questions[current_category.to_sym].shift
     end
 
     def current_category
-      case places[current_player]
-      when 0,4,8
-        'Pop'
-      when 1,5,9
-        'Science'
-      when 2,6,10
-        'Sports'
-      else
-        'Rock'
-      end
+      QUESTION_CATEGORIES[places[current_player] % QUESTION_CATEGORIES.size]
     end
 
     def did_player_win
