@@ -1,10 +1,10 @@
 require 'pry'
+require_relative './game_utils'
 
 module UglyTrivia
   class Game
     attr_accessor :players, :places, :purses, :in_penalty_box,
                   :current_player, :is_getting_out_of_penalty_box
-    QUESTION_CATEGORIES = ["Pop", "Science", "Sports", "Rock"].freeze
 
     def initialize
       @players = []
@@ -13,21 +13,7 @@ module UglyTrivia
       @in_penalty_box = Array.new(6, nil)
       @current_player = 0
       @is_getting_out_of_penalty_box = false
-      @questions = generate_questions(QUESTION_CATEGORIES, 50)
-    end
-
-    def generate_questions(categories, amount)
-      questions = {}
-      categories.each do |cat|
-        questions[cat.to_sym] = []
-      end
-
-      amount.times do |i|
-        categories.each do |cat|
-          questions[cat.to_sym] << "#{cat} Question #{i}"
-        end
-      end
-      questions
+      @questions = GameUtils.generate_questions
     end
 
     def is_playable?
@@ -98,12 +84,14 @@ module UglyTrivia
       true
     end
 
+    private
+
     def ask_question
-      puts @questions[current_category.to_sym].shift
+      puts @questions[current_category].shift
     end
 
     def current_category
-      QUESTION_CATEGORIES[places[current_player] % QUESTION_CATEGORIES.size]
+      GameUtils.question_category(places[current_player])
     end
 
     def did_player_win
