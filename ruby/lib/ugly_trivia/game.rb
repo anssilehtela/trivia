@@ -35,7 +35,7 @@ module UglyTrivia
 
     def roll(result)
       raise InvalidGameException, 'too few players' unless playable?
-      puts "#{cur_play.name} is the current player"
+      puts "#{player.name} is the current player"
       puts "They have rolled a #{result}"
 
       return if remains_in_penalty_box(result)
@@ -46,27 +46,27 @@ module UglyTrivia
     end
 
     def remains_in_penalty_box(result)
-      return false unless cur_play.in_penalty_box
+      return false unless player.in_penalty_box
 
       if result % 2 == 0
-        puts "#{cur_play.name} is not getting out of the penalty box"
+        puts "#{player.name} is not getting out of the penalty box"
         true
       else
-        cur_play.in_penalty_box = false
-        puts "#{cur_play.name} is getting out of the penalty box"
+        player.in_penalty_box = false
+        puts "#{player.name} is getting out of the penalty box"
         false
       end
     end
 
     def correct_answer
-      if cur_play.in_penalty_box
+      if player.in_penalty_box
         next_player
         return true
       end
 
       puts 'Answer was correct!!!!'
-      cur_play.purse += 1
-      puts "#{cur_play.name} now has #{cur_play.purse} Gold Coins."
+      player.purse += 1
+      puts "#{player.name} now has #{player.purse} Gold Coins."
       return false if winner?
       next_player
       true
@@ -74,14 +74,14 @@ module UglyTrivia
 
     def wrong_answer
       puts 'Question was incorrectly answered'
-      puts "#{cur_play.name} was sent to the penalty box"
-      cur_play.in_penalty_box = true
+      puts "#{player.name} was sent to the penalty box"
+      player.in_penalty_box = true
 
       next_player
       true
     end
 
-    def cur_play
+    def player
       players[current_player]
     end
 
@@ -92,11 +92,11 @@ module UglyTrivia
     end
 
     def current_category
-      GameUtils.question_category(cur_play.place)
+      GameUtils.question_category(player.place)
     end
 
     def winner?
-      cur_play.purse == GOLD_TO_WIN
+      player.purse == GOLD_TO_WIN
     end
 
     def next_player
@@ -105,9 +105,9 @@ module UglyTrivia
     end
 
     def new_place(result)
-      cur_play.place = cur_play.place + result
-      cur_play.place = cur_play.place - PLACES if cur_play.place > PLACES - 1
-      puts "#{cur_play.name}'s new location is #{cur_play.place}"
+      player.place = player.place + result
+      player.place = player.place - PLACES if player.place > PLACES - 1
+      puts "#{player.name}'s new location is #{player.place}"
     end
   end
 end
