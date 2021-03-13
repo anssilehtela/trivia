@@ -99,8 +99,8 @@ module UglyTrivia
     end
 
     def next_player
-      self.current_player += 1
-      self.current_player = 0 if current_player == @players.length
+      @current_player += 1
+      @current_player = 0 if current_player == @players.length
     end
 
     def new_place(result)
