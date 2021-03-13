@@ -7,6 +7,9 @@ module UglyTrivia
     attr_accessor :players, :places, :purses, :in_penalty_box,
                   :current_player, :is_getting_out_of_penalty_box, :players2
     PLACES = 11
+    GOLD_TO_WIN = 6
+    class InvalidGameException < StandardError
+    end
 
     def initialize
       @players = []
@@ -14,7 +17,7 @@ module UglyTrivia
       @questions = GameUtils.generate_questions
     end
 
-    def is_playable?
+    def playable?
       players.length >= 2
     end
 
@@ -27,11 +30,11 @@ module UglyTrivia
       players.push(Player.new(name))
       puts "#{name} was added"
       puts "They are player number #{players.length}"
-
       true
     end
 
     def roll(result)
+      raise InvalidGameException, 'too few players' unless playable?
       puts "#{cur_play.name} is the current player"
       puts "They have rolled a #{result}"
 
@@ -64,9 +67,9 @@ module UglyTrivia
       puts 'Answer was correct!!!!'
       cur_play.purse += 1
       puts "#{cur_play.name} now has #{cur_play.purse} Gold Coins."
-      winner = did_player_win
+      return false if winner?
       next_player
-      winner
+      true
     end
 
     def wrong_answer
@@ -92,8 +95,8 @@ module UglyTrivia
       GameUtils.question_category(cur_play.place)
     end
 
-    def did_player_win
-      !(cur_play.purse == 6)
+    def winner?
+      cur_play.purse == GOLD_TO_WIN
     end
 
     def next_player
