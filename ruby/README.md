@@ -1,21 +1,6 @@
-Test Frameworks
-===============
+This was a https://kata-log.rocks/bugs-zero-kata legacy code refactoring and bug fixing exercise. 
 
-This repo has configuration and example files for both RSpec and minitest. The
-RSpec files are in `/spec` and the minitest files are in `/test`.
+In this repo all of the listed bugs were fixed, code was made more modular and dry.
+Also added tests for 100% line and branch coverage.
 
-First install both of the gems using Bundler (don't worry, you'll only be
-using one at a time):
-
-    bundle install
-
-You can run the RSpec tests using:
-
-    rake spec
-
-And the minitest test using:
-
-    rake minitest
-
-Please modify any and all of these files to suit your preferences; these are
-simply meant as a starting point!
+Took some hours of active time to do.
