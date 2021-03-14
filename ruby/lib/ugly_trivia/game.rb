@@ -5,7 +5,7 @@ require_relative './player'
 module UglyTrivia
   class Game
     attr_accessor :players, :places, :purses, :in_penalty_box,
-                  :current_player, :is_getting_out_of_penalty_box, :players2
+                  :current_player_position, :is_getting_out_of_penalty_box
     PLACES = 11
     GOLD_TO_WIN = 6
     class InvalidGameException < StandardError
@@ -13,7 +13,7 @@ module UglyTrivia
 
     def initialize
       @players = []
-      @current_player = 0
+      @current_player_position = 0
       @questions = GameUtils.generate_questions
     end
 
@@ -35,54 +35,54 @@ module UglyTrivia
 
     def roll(result)
       raise InvalidGameException, 'too few players' unless playable?
-      puts "#{player.name} is the current player"
+      puts "#{current_player.name} is the current player"
       puts "They have rolled a #{result}"
 
       return if remains_in_penalty_box(result)
 
-      new_place(result)
+      update_player_place(result)
       puts "The category is #{current_category}"
       ask_question
     end
 
     def remains_in_penalty_box(result)
-      return false unless player.in_penalty_box
+      return false unless current_player.in_penalty_box
 
       if result % 2 == 0
-        puts "#{player.name} is not getting out of the penalty box"
+        puts "#{current_player.name} is not getting out of the penalty box"
         true
       else
-        player.in_penalty_box = false
-        puts "#{player.name} is getting out of the penalty box"
+        current_player.in_penalty_box = false
+        puts "#{current_player.name} is getting out of the penalty box"
         false
       end
     end
 
     def correct_answer
-      if player.in_penalty_box
-        next_player
+      if current_player.in_penalty_box
+        update_player_position
         return true
       end
 
       puts 'Answer was correct!!!!'
-      player.purse += 1
-      puts "#{player.name} now has #{player.purse} Gold Coins."
+      current_player.purse += 1
+      puts "#{current_player.name} now has #{current_player.purse} Gold Coins."
       return false if winner?
-      next_player
+      update_player_position
       true
     end
 
     def wrong_answer
       puts 'Question was incorrectly answered'
-      puts "#{player.name} was sent to the penalty box"
-      player.in_penalty_box = true
+      puts "#{current_player.name} was sent to the penalty box"
+      current_player.in_penalty_box = true
 
-      next_player
+      update_player_position
       true
     end
 
-    def player
-      players[current_player]
+    def current_player
+      players[current_player_position]
     end
 
     private
@@ -92,22 +92,22 @@ module UglyTrivia
     end
 
     def current_category
-      GameUtils.question_category(player.place)
+      GameUtils.question_category(current_player.place)
     end
 
     def winner?
-      player.purse == GOLD_TO_WIN
+      current_player.purse == GOLD_TO_WIN
     end
 
-    def next_player
-      @current_player += 1
-      @current_player = 0 if current_player == @players.length
+    def update_player_position
+      @current_player_position += 1
+      @current_player_position = 0 if current_player_position == @players.length
     end
 
-    def new_place(result)
-      player.place = player.place + result
-      player.place = player.place - PLACES if player.place > PLACES - 1
-      puts "#{player.name}'s new location is #{player.place}"
+    def update_player_place(result)
+      current_player.place = current_player.place + result
+      current_player.place = current_player.place - PLACES if current_player.place > PLACES - 1
+      puts "#{current_player.name}'s new location is #{current_player.place}"
     end
   end
 end
